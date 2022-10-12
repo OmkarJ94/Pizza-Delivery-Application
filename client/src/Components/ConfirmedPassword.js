@@ -23,10 +23,13 @@ const ConfirmedPassword = (props) => {
             if (
                 data.password !== data.cpassword ||
                 !data.cpassword ||
-                !data.password
+                !data.password ||
+                isNaN(data.Otp)
             ) {
-                swal("Password Not Matching");
+
+                swal("Enter Valid Data Check All Fields")
             } else {
+
                 setLoading(true);
                 const response = await fetch("/changepassword", {
                     method: "POST",
@@ -56,7 +59,7 @@ const ConfirmedPassword = (props) => {
                 }
             }
         } catch (error) {
-            setLoading(false);
+            swal("Enter Valid Data Check All Fields")
             swal("something went wrong");
         }
     };

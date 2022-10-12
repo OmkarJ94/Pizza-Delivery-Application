@@ -1,7 +1,7 @@
 import React from 'react'
 import PizzaList from '../Components/PizzaList';
 const intialState = {
-    pizzas: [],
+    pizza: [],
     sauces: [],
     cheeses: [],
     totalPrice: 0,
@@ -19,7 +19,7 @@ const reducer = (state = intialState, action) => {
             const { pizza, count, varient, category } = action.payload
 
 
-            const check = state.pizzas.find(pizza => pizza._id === action.payload.pizza._id);
+            const check = state.pizza.find(pizza => pizza._id === action.payload.pizza._id);
             if (check) {
                 return state
             }
@@ -31,10 +31,14 @@ const reducer = (state = intialState, action) => {
                 pizza.category = category
                 pizza.price = action.payload.pizza[varient]
 
+                localStorage.setItem('pizza', JSON.stringify({
+                    pizza: [...state.pizza, pizza]
+                }))
+                console.log(JSON.parse(localStorage.getItem('pizza')))
                 return {
 
                     ...state,
-                    pizzas: [...state.pizzas, pizza],
+                    pizza: [...state.pizza, pizza],
                     category,
                     totalPrice: Tprice,
                     totalQuantity: Tquantity
@@ -46,14 +50,35 @@ const reducer = (state = intialState, action) => {
         case "INC":
 
             const { _id, cate } = action.payload
-            if (cate === "pizza") {
-                find = state.pizzas.find(pizza => pizza._id === action.payload._id)
 
-                index = state.pizzas.findIndex(pizza => pizza._id === action.payload._id);
+            const IncData = JSON.parse(localStorage.getItem('pizza')).pizza
+            // console.log(IncData)
+
+            // IncData.map((ele) => {
+            //     if (ele._id === _id) {
+            //         console.log(ele.count)
+            //         ele.count += 1
+            //         localStorage.setItem('pizza', JSON.stringify({
+            //             pizza: [...state.pizza]
+            //         }))
+            //         console.log(JSON.parse(localStorage.getItem('pizza')).pizza)
+            //     }
+            // })
+
+            if (cate === "pizza") {
+                find = state.pizza.find(pizza => pizza._id === action.payload._id)
+
+                index = state.pizza.findIndex(pizza => pizza._id === action.payload._id);
 
                 find.count += 1
 
-                state.pizzas[index] = find
+                state.pizza[index] = find
+                localStorage.setItem('pizza', JSON.stringify(
+                    {
+                        pizza: [...state.pizza],
+                        totalPrice: state.totalPrice + find.price,
+                        totalQuantity: state.totalQuantity + 1
+                    }))
                 return {
                     ...state,
                     totalPrice: state.totalPrice + find.price,
@@ -97,13 +122,13 @@ const reducer = (state = intialState, action) => {
         case "DEC":
 
             if (action.payload.cate === "pizza") {
-                find = state.pizzas.find(pizza => pizza._id === action.payload._id)
-                index = state.pizzas.findIndex(pizza => pizza._id === action.payload_id);
+                find = state.pizza.find(pizza => pizza._id === action.payload._id)
+                index = state.pizza.findIndex(pizza => pizza._id === action.payload_id);
 
                 if (find.count > 1) {
 
                     find.count -= 1
-                    state.pizzas[index] = find
+                    state.pizza[index] = find
                 }
                 else {
                     return state
@@ -156,11 +181,11 @@ const reducer = (state = intialState, action) => {
         case 'REMOVE':
 
             if (action.payload.cate === "pizza") {
-                find = state.pizzas.find(pizza => pizza._id === action.payload._id);
-                const filter = state.pizzas.filter(pizza => pizza._id !== action.payload._id);
+                find = state.pizza.find(pizza => pizza._id === action.payload._id);
+                const filter = state.pizza.filter(pizza => pizza._id !== action.payload._id);
                 return {
                     ...state,
-                    pizzas: filter,
+                    pizza: filter,
                     totalPrice: state.totalPrice - find.price * find.count,
                     totalQuantity: state.totalQuantity - find.count
                 }

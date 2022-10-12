@@ -94,7 +94,7 @@ router.post("/signin", async (req, res) => {
             token = await result.generateAuthToken();
 
             res.cookie("jwt", token, {
-                expires: new Date(Date.now() + 600000),
+            
                 httpOnly: true,
             });
 
@@ -141,7 +141,7 @@ router.get("/pizza", async (req, res) => {
 
 router.post("/razorpay", authenticate, async (req, res) => {
     const { amount, time } = req.body;
-    console.log(typeof (amount));
+
 
     try {
         // amount = 500
@@ -154,7 +154,7 @@ router.post("/razorpay", authenticate, async (req, res) => {
             payment_capture,
 
         });
-        console.log(result)
+
 
         const postorder = await new order({
             user: req.rootUser._id,
@@ -169,7 +169,7 @@ router.post("/razorpay", authenticate, async (req, res) => {
         postorder.save();
         res.status(200).send(result.id);
     } catch (error) {
-        console.log(error.message)
+
         res.status(500).send("something went wrong");
     }
 });
@@ -247,7 +247,7 @@ router.post("/addproduct", async (req, res) => {
 router.post("/reset", async (req, res) => {
     try {
         const { email } = req.body;
-        console.log(email)
+
 
         if (!email) {
 
@@ -281,7 +281,7 @@ router.post("/reset", async (req, res) => {
 router.post("/changepassword", async (req, res) => {
     try {
         let { Otp, email, password } = req.body;
-        console.log(email, Otp, password)
+
 
         if (!Otp || !email || !password) {
             res.status(404).json({ error: "Enter All Fields" })
@@ -331,7 +331,7 @@ router.put("/status/:id", async (req, res) => {
         await data.save();
         res.status(200).send("ok")
     } catch (error) {
-        console.log(error)
+
         res.status(500).send("something went wrong")
     }
 })
@@ -361,14 +361,13 @@ const mailer = (mail, otp) => {
 
             if (err) {
 
-                console.log(err);
             } else {
-                console.log(data)
+    
             }
         })
     } catch (error) {
 
-        console.log(error);
+
     }
 }
 

@@ -8,9 +8,10 @@ import { useEffect, useState } from 'react';
 
 const Addtocart = () => {
     const { pizzas, totalQuantity, totalPrice, sauces, cheeses } = useSelector(state => state.cardItems);
-
+    const [LocalPizza, setLocalPizza] = useState([])
     const dispatch = useDispatch()
     const [data, setUserData] = useState({})
+
 
     const [counter, setCounter] = useState(0)
 
@@ -103,9 +104,17 @@ const Addtocart = () => {
 
 
     }
+    var Pizza = [];
 
+    const fetchdata = () => {
+        Pizza = (JSON.parse(localStorage.getItem('pizza'))).pizza
+        console.log(Pizza)
+        setLocalPizza(Pizza)
+        console.log(LocalPizza)
+    }
     useEffect(() => {
         handleClick()
+        fetchdata()
 
     }, [])
     return (
@@ -128,7 +137,7 @@ const Addtocart = () => {
                                                 ""
                                             }
 
-                                            {pizzas.map((ele) => {
+                                            {LocalPizza.map((ele) => {
                                                 return (
                                                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                         <div class="col-md-2 col-lg-2 col-xl-2">

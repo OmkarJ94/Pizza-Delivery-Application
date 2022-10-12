@@ -112,6 +112,8 @@ const Cart = () => {
 
   useEffect(() => {
     handleClick()
+    const data = localStorage.getItem("pizzas")
+    console.log(data)
 
   }, [])
   return (

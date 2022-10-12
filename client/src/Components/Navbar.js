@@ -5,9 +5,7 @@ import "./Navbar.css"
 import Sauce from './Sauce'
 const Navbar = () => {
     const state = useSelector(state => state.cardItems)
-    console.log(state.type)
-
-    console.log(state.type === process.env.REACT_APP_type)
+   
     if (state.status && state.type === process.env.REACT_APP_type) {
         return (
             <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
