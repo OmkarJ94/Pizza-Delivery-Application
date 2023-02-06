@@ -5,7 +5,7 @@ import "./Navbar.css"
 import Sauce from './Sauce'
 const Navbar = () => {
     const state = useSelector(state => state.cardItems)
-   
+    console.log(state)
     if (state.status && state.type === process.env.REACT_APP_type) {
         return (
             <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
@@ -50,14 +50,15 @@ const Navbar = () => {
                     <div class="collapse navbar-collapse" id="navbarCollapse">
 
                         <div class="navbar-nav ms-auto">
+                           
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/logout">
-                                    LOG OUT
+                                <NavLink className="nav-link" to="/addtocart">
+                                    Cart {state.pizza.length + state.sauces.length + state.cheeses.length}
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/addtocart">
-                                    Cart {state.pizzas.length + state.sauces.length + state.cheeses.length}
+                                <NavLink className="nav-link" to="/logout">
+                                    LOG OUT
                                 </NavLink>
                             </li>
                         </div>

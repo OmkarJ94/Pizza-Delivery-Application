@@ -18,15 +18,21 @@ const Cheese = ({ cheese }) => {
             });
 
             const data = await res.json();
-
-            if (!res.status === 200) {
+            console.log(cheese);
+            if (!res.status == 200) {
                 swal("error");
             }
             else {
-                dispatch({ type: "cheese", payload: { cheese, count } });
+                if (cheese.category === "cheese") {
+                    dispatch({
+                        type: "cheese",
+                        payload: { cheese, count, category: "cheese" },
+                    });
+                }
+
             }
         } catch (error) {
-
+            console.log(error)
             History("/signin");
             swal("Please Log in to add item in cart");
 

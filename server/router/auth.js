@@ -9,7 +9,9 @@ const otp = require('../schema/Otp')
 const pizzalist = require("../schema/pizzalist");
 const Razorpay = require("razorpay");
 const shortid = require("shortid");
-
+const hbs = require("nodemailer-express-handlebars")
+const path = require("path");
+const { extname } = require("path");
 
 var razorpaya = new Razorpay({
     key_id: process.env._KEY_ID,
@@ -66,7 +68,7 @@ router.get("/profilepage", authenticate, (req, res) => {
         if (req.rootUser) {
             res.status(200).send(req.rootUser);
         } else {
-            res.status(500).send(req.rootUser);
+            res.status(500).json({ "status": "error" });
         }
     } catch (error) {
         res.status(500).send(req.rootUser);
@@ -94,7 +96,7 @@ router.post("/signin", async (req, res) => {
             token = await result.generateAuthToken();
 
             res.cookie("jwt", token, {
-            
+
                 httpOnly: true,
             });
 
@@ -144,7 +146,7 @@ router.post("/razorpay", authenticate, async (req, res) => {
 
 
     try {
-        // amount = 500
+   
         const payment_capture = 1;
         const currency = "INR";
         const result = await razorpaya.orders.create({
@@ -154,8 +156,6 @@ router.post("/razorpay", authenticate, async (req, res) => {
             payment_capture,
 
         });
-
-
         const postorder = await new order({
             user: req.rootUser._id,
             name: req.rootUser.name,
@@ -183,11 +183,6 @@ router.get("/getorder", async (req, res) => {
 
     }
 })
-
-
-
-
-
 
 router.get("/users", async (req, res) => {
     try {
@@ -321,9 +316,12 @@ router.post("/changepassword", async (req, res) => {
 
         res.status(404).status("Something Went Wrong")
     }
-
-
 })
+
+
+
+
+
 router.put("/status/:id", async (req, res) => {
     try {
         const data = await order.findOne({ _id: req.params.id })
@@ -335,6 +333,39 @@ router.put("/status/:id", async (req, res) => {
         res.status(500).send("something went wrong")
     }
 })
+
+router.get("/getspecificorders", authenticate, async (req, res) => {
+    try {
+        if (req.rootUser) {
+            const data = await order.find({ user: req.rootUser._id });
+            console.log(data);
+            res.status(200).send(data);
+        } else {
+
+            res.status(500).send(req.rootUser);
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(req.rootUser);
+    }
+})
+
+router.get("/particularproduct/:id", async (req, res) => {
+    let { id } = req.params
+    try {
+        let data = await pizzalist.findById(id)
+        if (data) {
+            res.status(200).json(data)
+        }
+        else {
+            res.status(203).json({ "message": "Something went wrong" })
+        }
+    } catch (e) {
+        res.status(203).json({ "message": "Something went wrong" })
+    }
+})
+
+
 
 
 const mailer = (mail, otp) => {
@@ -350,23 +381,37 @@ const mailer = (mail, otp) => {
             }
         });
 
+        mailTransporter.use('compile', hbs({
+            viewEngine: {
+                extname: ".handlebars",
+                partialsDir: path.resolve('./views'),
+                defaultLayout: false
+            },
+
+            viewPath: path.resolve('./views'),
+            extname: ".handlebars",
+        }))
+
         let mailDetails = {
             from: process.env.EMAIL,
             to: mail,
             subject: 'Email For Forgot Password',
-            text: `Your OTP for changing password is ${otp}`
+            template: 'index',
+            context: {
+                otp
+            }
         };
 
         mailTransporter.sendMail(mailDetails, function (err, data) {
 
             if (err) {
-
+                console.log(err)
             } else {
-    
+
             }
         })
     } catch (error) {
-
+        console.log(error)
 
     }
 }

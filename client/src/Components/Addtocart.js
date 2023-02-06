@@ -5,9 +5,11 @@ import CartItems from "./CartItems"
 import axios from 'axios'
 import swal from "sweetalert";
 import { useEffect, useState } from 'react';
+import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 
 const Addtocart = () => {
-    const { pizzas, totalQuantity, totalPrice, sauces, cheeses } = useSelector(state => state.cardItems);
+    const { pizza, totalQuantity, totalPrice, sauces, cheeses } = useSelector(state => state.cardItems);
+
     const [LocalPizza, setLocalPizza] = useState([])
     const dispatch = useDispatch()
     const [data, setUserData] = useState({})
@@ -107,12 +109,43 @@ const Addtocart = () => {
     var Pizza = [];
 
     const fetchdata = () => {
-        Pizza = (JSON.parse(localStorage.getItem('pizza'))).pizza
-        console.log(Pizza)
-        setLocalPizza(Pizza)
-        console.log(LocalPizza)
+        // Pizza = (JSON.parse(localStorage.getItem('pizza'))).pizza
+        // console.log(Pizza)
+        // setLocalPizza(Pizza)
+        // console.log(LocalPizza)
     }
+
+    const sendMail = async () => {
+        try {
+            const res = await fetch("/invoice", {
+                method: "post",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            });
+
+            const Data = await res.json();
+
+            if (!res.status === 200) {
+                swal("error");
+            }
+            else {
+                setUserData(Data)
+
+            }
+        } catch (error) {
+
+        }
+    }
+
+
+
+
+
     useEffect(() => {
+        console.log(pizza)
         handleClick()
         fetchdata()
 
@@ -137,7 +170,8 @@ const Addtocart = () => {
                                                 ""
                                             }
 
-                                            {LocalPizza.map((ele) => {
+                                            {pizza.map((ele) => {
+                                                console.log(ele)
                                                 return (
                                                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
@@ -149,25 +183,16 @@ const Addtocart = () => {
                                                             <h6 class="text-muted">{ele.category}</h6>
                                                             <h6 class="text-black mb-0">{ele.varient}</h6>
                                                         </div>
-                                                        <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                                            <button class="btn btn-primary px-2"
-                                                                onClick={() => {
+                                                        <div class="col-md-3 col-lg-3 col-xl-2 ">
+                                                            <FaMinusCircle className="m-2" onClick={() => {
+                                                                dispatch({ type: "DEC", payload: { _id: ele._id, cate: "pizza" } })
+                                                            }} />
+                                                            {ele.count}
+                                                            <FaPlusCircle className="m-2" onClick={() => {
+                                                                dispatch({ type: "INC", payload: { _id: ele._id, cate: "pizza" } })
 
-                                                                    dispatch({ type: "DEC", payload: { _id: ele._id, cate: "pizza" } })
-                                                                }}>
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
+                                                            }} />
 
-                                                            <input id="form1" min="0" name="quantity" value={ele.count} type="text"
-                                                                class="form-control form-control-sm" />
-
-                                                            <button class="btn btn-primary px-2"
-                                                                onClick={() => {
-                                                                    dispatch({ type: "INC", payload: { _id: ele._id, cate: "pizza" } })
-
-                                                                }}>
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
                                                         </div>
                                                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                                                             <h6 class="mb-0">₹ {ele.price * ele.count}</h6>
@@ -199,24 +224,21 @@ const Addtocart = () => {
                                                             <h6 class="text-black mb-0">{ele.sauce.name}</h6>
                                                         </div>
                                                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                                            <button class="btn btn-primary px-2"
+                                                            <FaMinusCircle className="m-2"
                                                                 onClick={() => {
 
                                                                     dispatch({ type: "DEC", payload: { _id: ele.sauce._id, cate: "sauce" } })
-                                                                }}>
-                                                                <i class="fas fa-minus"></i>
-                                                            </button>
+                                                                }} />
 
-                                                            <input id="form1" min="0" name="quantity" value={ele.count} type="text"
-                                                                class="form-control form-control-sm" />
 
-                                                            <button class="btn btn-primary px-2"
+
+                                                            {ele.count}
+
+                                                            <FaMinusCircle className="m-2"
                                                                 onClick={() => {
                                                                     dispatch({ type: "INC", payload: { _id: ele.sauce._id, cate: "sauce" } })
 
-                                                                }}>
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
+                                                                }} />
                                                         </div>
                                                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                                                             <h6 class="mb-0">₹ {ele.sauce.price * ele.count}</h6>
@@ -247,24 +269,19 @@ const Addtocart = () => {
                                                                 <h6 class="text-black mb-0">{ele.cheese.name}</h6>
                                                             </div>
                                                             <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                                                <button class="btn btn-primary px-2"
+                                                                <FaMinusCircle className="m-2"
                                                                     onClick={() => {
 
                                                                         dispatch({ type: "DEC", payload: { _id: ele.cheese._id, cate: "cheese" } })
-                                                                    }}>
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
+                                                                    }} />
 
-                                                                <input id="form1" min="0" name="quantity" value={ele.count} type="text"
-                                                                    class="form-control form-control-sm" />
+                                                                {ele.count}
 
-                                                                <button class="btn btn-primary px-2"
+                                                                <FaMinusCircle className="m-2"
                                                                     onClick={() => {
                                                                         dispatch({ type: "INC", payload: { _id: ele.cheese._id, cate: "cheese" } })
 
-                                                                    }}>
-                                                                    <i class="fas fa-plus"></i>
-                                                                </button>
+                                                                    }} />
                                                             </div>
                                                             <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                                                                 <h6 class="mb-0">₹ {ele.cheese.price * ele.count}</h6>
@@ -285,6 +302,7 @@ const Addtocart = () => {
 
                                             <hr class="my-4" />
                                             <div class="pt-5">
+                                                {/* <h6 onclick={() =>sendMail()} style={{cursor: 'pointer'}}>Get Your invoice on mail</h6> */}
                                                 <h6 class="mb-0"><NavLink to="/" class="text-body"><i
                                                     class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</NavLink></h6>
                                             </div>
