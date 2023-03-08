@@ -41,7 +41,7 @@ const Addtocart = () => {
             }
 
         } catch (error) {
-            // history("/signin");
+            history("/signin");
             swal("You Must Be Logged In To View About Page");
 
         }
@@ -52,7 +52,6 @@ const Addtocart = () => {
                 {
                     method: 'POST',
                     headers: {
-                        Accept: "application/json",
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
@@ -62,8 +61,7 @@ const Addtocart = () => {
                 })
 
             const result = await res.json();
-            console.log(result)
-            console.log(res)
+  
 
         } catch (error) {
             console.log(error.message);
@@ -170,10 +168,10 @@ const Addtocart = () => {
                                                 ""
                                             }
 
-                                            {pizza.map((ele) => {
+                                            {pizza.map((ele,index) => {
                                                 console.log(ele)
                                                 return (
-                                                    <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                                    <div class="row mb-4 d-flex justify-content-between align-items-center" key={index}>
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
                                                             <img
                                                                 src={ele.image}
@@ -211,9 +209,9 @@ const Addtocart = () => {
                                             })
                                             }
 
-                                            {sauces.map((ele) => {
+                                            {sauces.map((ele,index) => {
                                                 return (
-                                                    <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                                    <div class="row mb-4 d-flex justify-content-between align-items-center" key={index}>
                                                         <div class="col-md-2 col-lg-2 col-xl-2">
                                                             <img
                                                                 src={ele.sauce.image}
@@ -256,9 +254,9 @@ const Addtocart = () => {
                                                 )
                                             })}
                                             {
-                                                cheeses.map((ele) => {
+                                                cheeses.map((ele,index) => {
                                                     return (
-                                                        <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                                        <div class="row mb-4 d-flex justify-content-between align-items-center" key={index}>
                                                             <div class="col-md-2 col-lg-2 col-xl-2">
                                                                 <img
                                                                     src={ele.cheese.image}

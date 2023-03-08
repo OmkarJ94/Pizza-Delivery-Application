@@ -146,7 +146,7 @@ router.post("/razorpay", authenticate, async (req, res) => {
 
 
     try {
-   
+
         const payment_capture = 1;
         const currency = "INR";
         const result = await razorpaya.orders.create({
@@ -166,10 +166,11 @@ router.post("/razorpay", authenticate, async (req, res) => {
             time,
             status: "placed"
         });
+        console.log(postorder)
         postorder.save();
         res.status(200).send(result.id);
     } catch (error) {
-
+        console.log(error)
         res.status(500).send("something went wrong");
     }
 });
